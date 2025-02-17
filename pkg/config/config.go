@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 
+	"github.com/DenisUstinov/go-app-base-layout/pkg/logger"
 	"github.com/joho/godotenv"
 	"github.com/kelseyhightower/envconfig"
 )
@@ -13,7 +14,8 @@ type App struct {
 }
 
 type Config struct {
-	App App
+	App    App
+	Logger logger.Config
 }
 
 func New() (Config, error) {
