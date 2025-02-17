@@ -1,7 +1,16 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/DenisUstinov/go-app-base-layout/pkg/config"
+	"github.com/rs/zerolog/log"
+)
 
 func main() {
-	fmt.Print("Hello, World!")
+	c, err := config.New()
+	if err != nil {
+		log.Fatal().Err(err).Msg("config.New")
+	}
+	fmt.Println(c)
 }
