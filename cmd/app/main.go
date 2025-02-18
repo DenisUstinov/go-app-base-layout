@@ -12,5 +12,5 @@ func main() {
 		log.Fatal().Err(err).Msg("config.New")
 	}
 
-	logger.Init(c.Logger)
+	logger.Init(c.Logger, c.App.Name, c.App.Version)
 }

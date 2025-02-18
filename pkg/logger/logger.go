@@ -9,25 +9,24 @@ import (
 )
 
 type Config struct {
-	AppName       string `envconfig:"APP_NAME" required:"true"`
-	AppVersion    string `envconfig:"APP_VERSION" required:"true"`
-	Level         string `envconfig:"LOGGER_LEVEL" default:"error"`
+	Level         string `envconfig:"LOGGER_LEVEL"`
 	PrettyConsole bool   `envconfig:"LOGGER_PRETTY_CONSOLE" default:"false"`
 }
 
-func Init(c Config) {
+func Init(c Config, app_name string, app_version string) {
 	zerolog.TimeFieldFormat = time.RFC3339
-	zerolog.SetGlobalLevel((zerolog.InfoLevel))
 
 	level, err := zerolog.ParseLevel(c.Level)
-	if err == nil {
-		zerolog.SetGlobalLevel(level)
+	if err != nil {
+		level = zerolog.InfoLevel
+		log.Warn().Err(err).Msg("Failed to parse log level, using default InfoLevel")
 	}
+	zerolog.SetGlobalLevel(level)
 
 	log.Logger = log.With().
 		Caller().
-		Str("app_name", c.AppName).
-		Str("app_version", c.AppVersion).
+		Str("app_name", app_name).
+		Str("app_version", app_version).
 		Logger()
 
 	if c.PrettyConsole {
