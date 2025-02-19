@@ -9,8 +9,8 @@ import (
 )
 
 type Config struct {
-	Level         string `envconfig:"LOGGER_LEVEL"`
-	PrettyConsole bool   `envconfig:"LOGGER_PRETTY_CONSOLE" default:"false"`
+	Level         string `envconfig:"LOGGER_LEVEL|info" default:"info"`
+	PrettyConsole bool   `envconfig:"LOGGER_PRETTY_CONSOLE|false" default:"false"`
 }
 
 func Init(c Config, app_name string, app_version string) {
@@ -18,8 +18,7 @@ func Init(c Config, app_name string, app_version string) {
 
 	level, err := zerolog.ParseLevel(c.Level)
 	if err != nil {
-		level = zerolog.InfoLevel
-		log.Warn().Err(err).Msg("Failed to parse log level, using default InfoLevel")
+		log.Fatal().Err(err).Msgf("Invalid log level specified: %s. Exiting.", c.Level)
 	}
 	zerolog.SetGlobalLevel(level)
 
@@ -30,7 +29,9 @@ func Init(c Config, app_name string, app_version string) {
 		Logger()
 
 	if c.PrettyConsole {
-		log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr, TimeFormat: "15:04:05"})
+		log.Logger = log.Output(
+			zerolog.ConsoleWriter{
+				Out: os.Stderr, TimeFormat: "15:04:05"})
 	}
 
 	log.Info().Msg("Logger initialized")
